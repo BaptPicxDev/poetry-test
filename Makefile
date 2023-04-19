@@ -39,6 +39,14 @@ run-pytest:
 	echo "Running pytest"
 	poetry run pytest -vv --cov=src/ tests/
 
+.PHONY: run ## Run main.py with production
+run:
+	poetry run python3 main.py
+
+.PHONY: run-dev ## Run main.py with development
+run-dev:
+	poetry run python3 main.py --dev
+
 .PHONY: clean-venv ## Clean virtual environment (local dev)
 clean-venv:
 	echo "Removing python3 virtual environment using poetry"
