@@ -10,28 +10,35 @@ help:
 
 .PHONY: build-venv ## Create virtual environment and install requirements (local dev)
 build-venv:
-	echo "Creating python3 virtual environment"
-	python3 -m venv .venv
-	source .venv/bin/activate
-	pip3 install wheel
-	pip3 install poetry
-	deactivate
+	echo "Creating python3 virtual environment with poetry"
+	make install-production-packages
+	make install-dev-packages
+	poetry install
 
-.PHONY: install-production-package ## Install production package (from pypi.org) using poetry
-install-production-package:
-	echo "Installing production packages"
-	source .venv/bin/activate
-	poetry install pandas
-	deactivate
+.PHONY: add-production-packages ## Add production package to pyproject.toml (from pypi.org) using poetry
+add-production-packages:
+	echo "Adding production packages"
+	poetry add pandas
+	poetry add numpy
 
-.PHONY: install-dev-package ## Install dev package (from pypi.org) using poetry
-install-dev-package:
+.PHONY: add-dev-packages ## Add dev package to pyproject.toml(from pypi.org) using poetry
+add-dev-packages:
 	echo "Installing dev packages"
-	source .venv/bin/activate
-	poetry install -D pytest
-	deactivate
+	poetry add --group dev pytest
+	poetry add --group dev pytest-cov
+	poetry add --group dev pytest-mock
+	poetry add --group dev pylint
+
+.PHONY: check-dependencies ## Ensure that all dependencies are installed
+check-dependencies:
+	echo "Ensure dependencies are installed"
+	poetry check
+
+.PHONY: run-pytest ## Run pytest using pytest
+run-pytest:
+	echo "Running pytest"
+	poetry run pytest -vv --cov=src/ tests/
 
 .PHONY: clean-venv ## Clean virtual environment (local dev)
 clean-venv:
-	echo "Removing python3 virtual environment"
-	rm -rf .venv/
+	echo "Removing python3 virtual environment using poetry"
