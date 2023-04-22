@@ -11,9 +11,14 @@ help:
 .PHONY: build-venv ## Create virtual environment and install requirements (local dev)
 build-venv:
 	echo "Creating python3 virtual environment with poetry"
-	make install-production-packages
-	make install-dev-packages
-	poetry install
+	poetry config virtualenvs.in-project true
+	if [ ! -f pyproject.tml ]; then
+		echo "Generating pyproject.toml file."
+		poetry init -n
+	fi
+	make add-production-packages
+	make add-dev-packages
+	make check-dependencies
 
 .PHONY: add-production-packages ## Add production package to pyproject.toml (from pypi.org) using poetry
 add-production-packages:
